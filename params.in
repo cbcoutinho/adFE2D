@@ -1,10 +1,4 @@
-20	nelemV		Number of Elements vertical
-20	nelemH		Number of Elements horizontal
-1d1	length		Length of average element
-1d1	width		Width of average element
-441	nnod		Number of nodes
-400	nelem		Number of elements
-0	option1		1: create new input file, 0: don't create a new input file
+Param_Value Param_Name Description
 1d-7	deltat		Time step length
 1d0	tf		Final Time
 100	writetime	Number of Time step write outs
