@@ -1,5 +1,5 @@
 data.out
-obj/*
-bin/*
-!bin
-!obj
+#obj/*
+#bin/*
+#!bin
+#!obj
