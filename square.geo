@@ -9,7 +9,7 @@ Still need to figure out a way to output boundary faces
 lenX = 20; //m
 lenY = 10; //m
 
-gridsizeX = 1; // lenX / 20;
+gridsize = 1; // lenX / 20;
 
 // All numbering counterclockwise from bottom-left corner
 Point(1) = {-lenX/2, -lenY/2, 0, gridsize};
