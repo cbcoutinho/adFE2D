@@ -12,6 +12,12 @@ Line(1) = {1, 2};               // bottom line
 Line(2) = {2, 3};               // right line
 Line(3) = {3, 4};               // top line
 Line(4) = {4, 1};               // left line
+
+//Physical Line(7) = {4};
+//Physical Line(8) = {1};
+//Physical Line(9) = {2};
+//Physical Line(10) = {3};
+
 Line Loop(5) = {1, 2, 3, 4};    
 // the order of lines in Line Loop is used again in surfaceVector[]
 Plane Surface(6) = {5};
@@ -19,13 +25,14 @@ Plane Surface(6) = {5};
 Transfinite Surface {6};
 Recombine Surface {6};
 
-/*
-surfaceVector[] = Extrude {0, 0, meshThickness} {
- Surface{6};
- Layers{1};
- Recombine;
-};
 
+//surfaceVector[] = Extrude {0, 0, meshThickness} {
+// Surface{6};
+// Layers{1};
+// Recombine;
+//};
+
+/*
 surfaceVector contains in the following order:
 [0] - front surface (opposed to source surface)
 [1] - extruded volume
@@ -33,12 +40,12 @@ surfaceVector contains in the following order:
 [3] - right surface (belonging to 2nd line in "Line Loop (6)")
 [4] - top surface (belonging to 3rd line in "Line Loop (6)")
 [5] - left surface (belonging to 4th line in "Line Loop (6)")
-
-Physical Surface("front") = surfaceVector[0];
-Physical Volume("internal") = surfaceVector[1];
-Physical Surface("bottom") = surfaceVector[2];
-Physical Surface("right") = surfaceVector[3];
-Physical Surface("top") = surfaceVector[4];
-Physical Surface("left") = surfaceVector[5];
-Physical Surface("back") = {6}; // from Plane Surface (6) ...
 */
+
+//Physical Surface("front") = surfaceVector[0];
+//Physical Volume("internal") = surfaceVector[1];
+//Physical Surface("bottom") = surfaceVector[2];
+//Physical Surface("right") = surfaceVector[3];
+//Physical Surface("top") = surfaceVector[4];
+//Physical Surface("left") = surfaceVector[5];
+//Physical Surface("back") = {6}; // from Plane Surface (6) ...
