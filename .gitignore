@@ -1,3 +1,5 @@
 data.out
 obj/*
 bin/*
+!bin
+!obj
