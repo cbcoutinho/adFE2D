@@ -1,4 +1,4 @@
-program main
+program adFE2D
 use input
 use globals
 use construct
@@ -130,4 +130,4 @@ use linsolver
  deallocate(xy_coord,elem_mat,convert)
  deallocate(xsrc,xplay,occur,decomp,o_lud,q_lud)
  
-end program main
+end program adFE2D
