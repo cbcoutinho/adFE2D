@@ -9,23 +9,21 @@ subroutine ingest
  
  if(option1.eq.1) call inputgen
  
- open(999,file='test.msh',status='old')
- 
- read(999,*) nnod
- allocate(xy_coord(nnod,2))
- do i = 1,nnod
- read(999,*) dum,(xy_coord(i,j),j=1,2)
- end do
- 
- read(999,*) nelem
- allocate(elem_mat(nelem,4))
- do i = 1,nelem
-  read(999,*) dum,(elem_mat(i,j),j = 1,4)
- end do
- 
- close(999)
- 
- 
+! open(999,file='test.msh',status='old')
+! 
+! read(999,*) nnod
+! allocate(xy_coord(nnod,2))
+! do i = 1,nnod
+! read(999,*) dum,(xy_coord(i,j),j=1,2)
+! end do
+! 
+! read(999,*) nelem
+! allocate(elem_mat(nelem,4))
+! do i = 1,nelem
+!  read(999,*) dum,(elem_mat(i,j),j = 1,4)
+! end do
+! 
+! close(999)
  
  allocate(BC_type(nnod),BC_value(nnod),convert(nnod))
  allocate(stiff_full(nnod,nnod),stress_full(nnod,nnod))
@@ -93,9 +91,9 @@ subroutine read_in2
  open(102,file='xycoord.in',status='old')
  open(103,file='bc.in',status='old')
  
- read(101,*)
- read(102,*)
- read(103,*)
+ read(101,*) ! Read the header line
+ read(102,*) ! Read the header line
+ read(103,*) ! Read the header line
  
  read(103,*) num
  read(103,*)
