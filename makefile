@@ -6,16 +6,18 @@ SRC=$(current_dir)/src
 OBJ=$(current_dir)/obj
 BIN=$(current_dir)/bin
 
+
 # Compiler
 FF = gfortran
 #FFlags = -Wall -fbounds-check
+FLIBS = -lblas -llapack
 
 # Extra object files required by main program
 objects=$(OBJ)/input.o $(OBJ)/globals.o $(OBJ)/construct.o $(OBJ)/legendre.o $(OBJ)/linsolver.o
 
 
 $(BIN)/adFE2D: $(OBJ)/adFE2D.o $(objects)
-	$(FF) $(FFlags) -o $@ $+
+	$(FF) $(FFlags) -o $@ $+ $(FLIBS)
 $(OBJ)/adFE2D.o: $(SRC)/adFE2D.f90 $(objects)
 	$(FF) $(FFlags) -I$(OBJ) -c -o $@ $<
 $(OBJ)/input.o: $(SRC)/input.f90 $(OBJ)/globals.o

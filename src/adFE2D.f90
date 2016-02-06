@@ -3,25 +3,26 @@ use input
 use globals
 use construct
 use linsolver
-    integer::i,j,t,num1,num2,dum
+    integer::i,j,t,num1,num2,dum, info
     integer,dimension(:),allocatable::occur
-    double precision::delt,delt_out,dum1,dum2
-    double precision,dimension(:),allocatable::xplay,RHS_save
-    double precision,dimension(:,:),allocatable::x,inv,xsrc
+    double precision::delt,delt_out,dum1,dum2, value
+    double precision,dimension(:),allocatable::xplay,RHS_save,b,ipiv
+    double precision,dimension(:,:),allocatable::x,inv,xsrc,A
     
     
     call input_all
     call build
     
-    open(99,file='data.out',status='replace')
+    open(908,file='data.out',status='replace')
     open(909,file='scratch.out',status='replace')
-    write(99,*) nnod
+    
     
     allocate(x(nrows,2))
     allocate(inv(nrows,nrows))
     allocate(xsrc(nrows,2),xplay(nrows),occur(nrows))
     allocate(decomp(nrows,nrows),o_lud(n),q_lud(n))
     allocate(RHS_save(nrows))
+    allocate(A(nrows,nrows),b(nrows),ipiv(nrows))
     
     open(104,file='ic.in',status='old')
     
@@ -63,11 +64,11 @@ use linsolver
     close(104)
     
 !        do i = 1,nnod
-!            write(99,*) (xy_coord(i,j),j=1,2)
+!            write(908,*) (xy_coord(i,j),j=1,2)
 !        end do
-!        write(99,*) 
+!        write(908,*) 
 !        do i = 1,nelem
-!            write(99,*) (elem_mat(i,j),j = 1,4)
+!            write(908,*) (elem_mat(i,j),j = 1,4)
 !        end do
 !        stop
     
@@ -90,9 +91,9 @@ use linsolver
 !    
 !    do i = 1,nnod
 !        if(BC_type(i).eq.0) then
-!            write(99,100) xy_coord(i,:),BC_value(i)
+!            write(908,100) xy_coord(i,:),BC_value(i)
 !        else
-!            write(99,100) xy_coord(i,:),x(convert(i),2)
+!            write(908,100) xy_coord(i,:),x(convert(i),2)
 !            sumsq = sumsq + (x(convert(i),2)-x(convert(i),1))**2D0
 !        end if
 !    end do
@@ -111,9 +112,7 @@ use linsolver
     RHS_save = RHS_reduced
     matcalc = .true.
     
-    sumsq = 1d0
-    
-    do while (sumsq.gt.sumlim.and.time.lt.tf)
+    do
         RHS_reduced = RHS_save
         numt = numt + 1
         time = time + delt
@@ -133,52 +132,70 @@ use linsolver
             end do
         end if
         
-!        write(*,*) "Calling LUD"
-        call lud(stiff_reduced+stress_reduced, &
-            & -(RHS_reduced-matmul(stress_reduced,x(:,1))), &
-            & x(:,2),nrows)
-!        write(*,*) "Finish LUD"
+
         
-        do i=1,nrows
-            write(909,*) (x(i,j),j=1,2)
-        end do
+!        write(*,*) "Calling LinAlg"
+
+
+        A = stiff_reduced+stress_reduced
+        b = -(RHS_reduced-matmul(stress_reduced,x(:,1)))
+
+        call lud(A, b, x(:,2), nrows)
+!        call dgesv (nrows, 1, A, nrows, ipiv, b, nrows, info)
+!        x(:,2) = b
+        
+!        if ( info /= 0 ) then
+!            write ( *, '(a)' ) ' '
+!            write ( *, '(a,i8)' ) ' There was a problem, info = ', info
+!            stop
+!        end if
+        
+!        write(*,*) "Finish LinAlg"
+        
             
 !        write(*,*) "Calling matmul"
 !        x(:,2) = matmul(inv,-(RHS_reduced-matmul(stress_reduced,x(:,1))))
-     
+        
+        
         if(delt_out.ge.writetime) then
             sumsq = 0D0
             delt_out = 0d0
             numt_out = numt_out + 1
             
             do i = 1,nnod
+!                write(*,*) i
                 if(BC_type(i).eq.0) then
-                    write(99,100) i, xy_coord(i,:), BC_value(i)
+                    value = BC_value(i)
                 else
-                    write(99,100) i, xy_coord(i,:),x(convert(i),2)
+                    value = x(convert(i),2)
                     sumsq = sumsq + (x(convert(i),2)-x(convert(i),1))**2D0
                 end if
+!                write(*,*) i, sumsq, convert(i), value
+!                delt_out = 0d0
+                write(908,100) xy_coord(i,:), value
             end do
             
-            sumsq = sqrt(sumsq/nnod)
+            sumsq = sqrt(sumsq/nrows)
             write(*,*) numt,numt_out,time,sumsq
-            write(909,*) time,sumsq
+!            write(909,*) time,sumsq
         end if
-     
-!        if(sumsq.le.sumlim.or.time.ge.tf) exit
-!        if(time.ge.tf) exit
+        
+        if(sumsq.le.sumlim.or.time.ge.tf) exit
+        if(time.ge.tf) exit
 !    if(numt_out.ge.10) stop
+     
     end do
-
     
-    write(99,*) numt_out,nnod
+    write(908,*) numt_out,nnod
     
-    100 format (i4,3(es13.6,1x))
+    100 format (3(es13.6,1x))
     
+        
     deallocate(BC_type,BC_value)
     deallocate(stiff_full,stiff_reduced)
     deallocate(RHS_full,RHS_reduced,x,inv)
     deallocate(xy_coord,elem_mat,convert)
     deallocate(xsrc,xplay,occur,decomp,o_lud,q_lud)
+    deallocate(A,b)
  
 end program adFE2D

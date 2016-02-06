@@ -52,7 +52,7 @@ subroutine read_params
     read(100,*) vely
     read(100,*) sumlim
     
-    writetime = tf/dble(numWrite)
+!    writetime = tf/dble(numWrite)
     
     close(100)
  
