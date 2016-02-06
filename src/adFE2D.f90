@@ -16,6 +16,8 @@ use linsolver
     open(908,file='data.out',status='replace')
     open(909,file='scratch.out',status='replace')
     
+    write(908,*) nnod
+    
     
     allocate(x(nrows,2))
     allocate(inv(nrows,nrows))

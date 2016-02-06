@@ -1,9 +1,9 @@
 Param_Value Param_Name Description
 1d-4    deltat      Time step length
 1d0     tf          Final Time
-5d2     numWrite    Number of Time step write outs
-1d1     Dx          Diffusion Coefficient in x
-1d1     Dy          Diffusion Coefficient in y
-0d1     velx        Velocity in x
-0d1     vely        Velocity in y
-1d-5    sumlim      Limit on sum of sq residual
+2d2     numWrite    Number of Time step write outs
+1d0     Dx          Diffusion Coefficient in x
+1d0     Dy          Diffusion Coefficient in y
+1d0     velx        Velocity in x
+5d-1     vely        Velocity in y
+1d-6    sumlim      Limit on sum of sq residual
