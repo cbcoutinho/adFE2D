@@ -1,7 +1,8 @@
 Boundary Conditions
-3       Number of Boundaries
+5       Number of Boundaries
 Node #  BC Type BC Value
-2       0       1d0
+1       0       0d0
+15      0       1d0
 4       0       0d0
 120     0       2d0
 2       0       0d0

@@ -1,7 +1,7 @@
 Param_Value Param_Name Description
 1d-4    deltat      Time step length
 1d0     tf          Final Time
-1d-1    numWrite    Number of Time step write outs
+5d2     numWrite    Number of Time step write outs
 1d1     Dx          Diffusion Coefficient in x
 1d1     Dy          Diffusion Coefficient in y
 0d1     velx        Velocity in x

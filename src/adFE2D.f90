@@ -5,7 +5,7 @@ use construct
 use linsolver
     integer::i,j,t,num1,num2,dum, info
     integer,dimension(:),allocatable::occur
-    double precision::delt,delt_out,dum1,dum2, value
+    double precision::delt_out,dum1,dum2, value
     double precision,dimension(:),allocatable::xplay,RHS_save,b,ipiv
     double precision,dimension(:,:),allocatable::x,inv,xsrc,A
     
@@ -108,15 +108,15 @@ use linsolver
     numt_out = 0
     time = 0d0
     delt_out = 0d0
-    delt = deltat
     RHS_save = RHS_reduced
     matcalc = .true.
+    sumsq = 1d0
     
     do
         RHS_reduced = RHS_save
         numt = numt + 1
-        time = time + delt
-        delt_out = delt_out + delt
+        time = time + deltat
+        delt_out = delt_out + deltat
         x(:,1) = x(:,2)
         
         if(num2.gt.0) then
@@ -135,11 +135,10 @@ use linsolver
 
         
 !        write(*,*) "Calling LinAlg"
-
-
+        
         A = stiff_reduced+stress_reduced
         b = -(RHS_reduced-matmul(stress_reduced,x(:,1)))
-
+        
         call lud(A, b, x(:,2), nrows)
 !        call dgesv (nrows, 1, A, nrows, ipiv, b, nrows, info)
 !        x(:,2) = b
@@ -152,11 +151,11 @@ use linsolver
         
 !        write(*,*) "Finish LinAlg"
         
-            
 !        write(*,*) "Calling matmul"
 !        x(:,2) = matmul(inv,-(RHS_reduced-matmul(stress_reduced,x(:,1))))
         
         
+!        write(*,*) numt,numt_out,time
         if(delt_out.ge.writetime) then
             sumsq = 0D0
             delt_out = 0d0
