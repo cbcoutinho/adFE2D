@@ -9,13 +9,13 @@ Still need to figure out a way to output boundary faces
 lenX = 10; //m
 lenY = 10; //m
 
-gridsize = 0.1; // lenX / 20;
+gridsize = 1; // lenX / 20;
 
 // All numbering counterclockwise from bottom-left corner
-Point(1) = {-lenX/2, -lenY/2, 0, gridsize};
-Point(2) = {lenX/2, -lenY/2, 0, gridsize};
-Point(3) = {lenX/2, lenY/2, 0, gridsize};
-Point(4) = {-lenX/2, lenY/2, 0, gridsize};
+Point(1) = {0, 0, 0, gridsize};
+Point(2) = {lenX, 0, 0, gridsize};
+Point(3) = {lenX, lenY, 0, gridsize};
+Point(4) = {0, lenY, 0, gridsize};
 Line(1) = {1, 2};               // bottom line
 Line(2) = {2, 3};               // right line
 Line(3) = {3, 4};               // top line

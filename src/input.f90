@@ -5,45 +5,30 @@ contains
 subroutine ingest
     integer::i,num,dum
  
-    call read_in1
- 
-!    open(999,file='test.msh',status='old')
-!
-!    read(999,*) nnod
-!    allocate(xy_coord(nnod,2))
-!    do i = 1,nnod
-!    read(999,*) dum,(xy_coord(i,j),j=1,2)
-!    end do
-!
-!    read(999,*) nelem
-!    allocate(elem_mat(nelem,4))
-!    do i = 1,nelem
-!    read(999,*) dum,(elem_mat(i,j),j = 1,4)
-!    end do
-!
-!    close(999)
-
+    call read_params
     call read_gmsh
- 
+    
     allocate(BC_type(nnod),BC_value(nnod),convert(nnod))
     allocate(stiff_full(nnod,nnod),stress_full(nnod,nnod))
     allocate(RHS_full(nnod))
  
-    BC_type = 1
-    BC_value = 0D0
+    BC_type = 1     ! Initializes all node boundaries as natural boundaries
+    BC_value = 0D0  ! Sets gradient to zero  (zero neumann)
     
-    call read_in2
- 
+    call read_bc
+    
     convert = 0
     nrows = 0
     do i = 1,nnod
         if(BC_type(i).ne.0) then
             nrows = nrows + 1
             convert(i) = nrows
-!            write(*,*) i,convert(i)
+            write(*,*) i,convert(i)
         end if
     end do
- 
+    
+    stop
+    
     allocate(stiff_reduced(nrows,nrows),stress_reduced(nrows,nrows))
     allocate(RHS_reduced(nrows))
  
@@ -53,7 +38,7 @@ subroutine ingest
  
 end subroutine ingest
 
-subroutine read_in1
+subroutine read_params
     double precision::length,width,numWrite
     
     open(100,file='params.in',status='old')
@@ -72,7 +57,7 @@ subroutine read_in1
     
     close(100)
  
-end subroutine read_in1
+end subroutine read_params
 
 subroutine read_gmsh
     integer::i,j,dum,nElemOrig,elemType,numTag
@@ -140,43 +125,21 @@ subroutine read_gmsh
     
     close(101)
     
-    stop
-    
-    
 end subroutine read_gmsh
 
-subroutine read_in2
- integer::i,j,dum,num
-
- open(101,file='elem.in',status='old')
- open(102,file='xycoord.in',status='old')
- open(103,file='bc.in',status='old')
+subroutine read_bc
+    integer::i,j,dum,num
+    open(103,file='bc.in',status='old')
+    read(103,*) ! Read the header line
  
- read(101,*) ! Read the header line
- read(102,*) ! Read the header line
- read(103,*) ! Read the header line
- 
- read(103,*) num
- read(103,*)
- do i = 1,num
-  read(103,*) dum,BC_type(dum),BC_value(dum)
- end do
- 
-! write(*,*) "Blue Footed Booby"
-! stop
- 
-! do i = 1,nelem
-!  read(101,*) dum,(elem_mat(i,j),j = 1,4)
-! end do
- 
-! do i = 1,nnod
-!  read(102,*) dum,(xy_coord(i,j),j=1,2)
-! end do
- 
- close(101)
- close(102)
- close(103)
- 
-end subroutine read_in2
+    read(103,*) num
+    read(103,*) ! Read the header line
+    do i = 1,num
+     read(103,*) dum,BC_type(dum),BC_value(dum)
+    end do
+    
+    close(103)
+    
+end subroutine read_bc
 
 end module input
