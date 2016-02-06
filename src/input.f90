@@ -2,7 +2,7 @@ module input
 use globals
 contains
 
-subroutine ingest
+subroutine input_all
     integer::i,num,dum
  
     call read_params
@@ -23,20 +23,19 @@ subroutine ingest
         if(BC_type(i).ne.0) then
             nrows = nrows + 1
             convert(i) = nrows
-            write(*,*) i,convert(i)
+!            write(*,*) i,convert(i)
         end if
     end do
-    
-    stop
     
     allocate(stiff_reduced(nrows,nrows),stress_reduced(nrows,nrows))
     allocate(RHS_reduced(nrows))
  
     write(str,100) nnod+1
+    write(*,*) trim(str)
  
     100 format('(',i5,'(es17.10,1x))')
  
-end subroutine ingest
+end subroutine input_all
 
 subroutine read_params
     double precision::length,width,numWrite
@@ -65,7 +64,7 @@ subroutine read_gmsh
     
 ! Read filename from input arguement
     if(iargc().lt.1) then
-        write(*,*) "Input file name to adFE2D"
+        write(*,*) "No .msh file detected. Input file name to adFE2D"
         stop
     end if
     

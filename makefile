@@ -8,7 +8,7 @@ BIN=$(current_dir)/bin
 
 # Compiler
 FF = gfortran
-FFlags = -Wall
+#FFlags = -Wall -fbounds-check
 
 # Extra object files required by main program
 objects=$(OBJ)/input.o $(OBJ)/globals.o $(OBJ)/construct.o $(OBJ)/legendre.o $(OBJ)/linsolver.o

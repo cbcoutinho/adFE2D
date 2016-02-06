@@ -6,10 +6,10 @@ Still need to figure out a way to output boundary faces
 */
 
 // Inputs
-lenX = 10; //m
-lenY = 10; //m
+lenX = 1; //m
+lenY = 1; //m
 
-gridsize = 1; // lenX / 20;
+gridsize = 0.05; // lenX / 20;
 
 // All numbering counterclockwise from bottom-left corner
 Point(1) = {0, 0, 0, gridsize};
