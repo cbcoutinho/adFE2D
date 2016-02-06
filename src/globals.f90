@@ -1,5 +1,5 @@
 module globals
- integer::nelem,nelemV,nelemH,nnod,nrows
+ integer::nelem,nnod,nrows
  integer::option1,numt
  integer,dimension(:),allocatable::BC_type,convert
  integer,dimension(:),allocatable::o_lud

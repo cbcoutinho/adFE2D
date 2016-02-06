@@ -1,8 +1,8 @@
-1	Number of Initial Boundaries
-1	Number of Point Sources or Sinks
 Initial Conditions
-Node #	IC Value
-0	0d0
+1   Number of Initial Conditions
+Node #  IC Value
+0       0d0
 Additional Point Sources or Sinks
-Node #	Value	Time	Duration
-261	1d1	0d0	1d-1
+1   Number of Point Sources or Sinks
+Node #  Value   Time    Duration
+200     5d0     0d0     2.5d-1

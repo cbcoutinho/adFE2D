@@ -2,169 +2,143 @@ module input
 use globals
 contains
 
-subroutine ingest
- integer::i,num,dum
+subroutine input_all
+    integer::i,num,dum
  
- call read_in1
+    call read_params
+    call read_gmsh
+    
+    allocate(BC_type(nnod),BC_value(nnod),convert(nnod))
+    allocate(stiff_full(nnod,nnod),stress_full(nnod,nnod))
+    allocate(RHS_full(nnod))
  
- if(option1.eq.1) call inputgen
+    BC_type = 1     ! Initializes all node boundaries as natural boundaries
+    BC_value = 0D0  ! Sets gradient to zero  (zero neumann)
+    
+    call read_bc
+    
+    convert = 0
+    nrows = 0
+    do i = 1,nnod
+        if(BC_type(i).ne.0) then
+            nrows = nrows + 1
+            convert(i) = nrows
+!            write(*,*) i,convert(i)
+        end if
+    end do
+    
+    allocate(stiff_reduced(nrows,nrows),stress_reduced(nrows,nrows))
+    allocate(RHS_reduced(nrows))
  
- open(999,file='test.msh',status='old')
+    write(str,100) nnod+1
+    write(*,*) trim(str)
  
- read(999,*) nnod
- allocate(xy_coord(nnod,2))
- do i = 1,nnod
- read(999,*) dum,(xy_coord(i,j),j=1,2)
- end do
+    100 format('(',i5,'(es17.10,1x))')
  
- read(999,*) nelem
- allocate(elem_mat(nelem,4))
- do i = 1,nelem
-  read(999,*) dum,(elem_mat(i,j),j = 1,4)
- end do
- 
- close(999)
- 
- 
- 
- allocate(BC_type(nnod),BC_value(nnod),convert(nnod))
- allocate(stiff_full(nnod,nnod),stress_full(nnod,nnod))
- allocate(RHS_full(nnod))
- 
- BC_type = 1
- BC_value = 0D0
- 
- call read_in2
- 
- convert = 0
- 
- nrows = 0
- do i = 1,nnod
-  if(BC_type(i).ne.0) then
-   nrows = nrows + 1
-   convert(i) = nrows
-!   write(*,*) i,convert(i)
-  end if
- end do
- 
- allocate(stiff_reduced(nrows,nrows),stress_reduced(nrows,nrows))
- allocate(RHS_reduced(nrows))
- 
- write(str,100) nnod+1
- 
- 100 format('(',i5,'(es17.10,1x))')
- 
-end subroutine ingest
+end subroutine input_all
 
-subroutine read_in1
- double precision::length,width,num
+subroutine read_params
+    double precision::length,width,numWrite
+    
+    open(100,file='params.in',status='old')
+    read(100,*) ! Read blank line
+    
+    read(100,*) deltat
+    read(100,*) tf
+    read(100,*) numWrite
+    read(100,*) Dx
+    read(100,*) Dy
+    read(100,*) velx
+    read(100,*) vely
+    read(100,*) sumlim
+    
+    writetime = tf/dble(numWrite)
+    
+    close(100)
+ 
+end subroutine read_params
 
- open(100,file='params.in',status='old')
- 
- read(100,*) nelemV
- read(100,*) nelemH
- read(100,*) length
- read(100,*) width
- read(100,*) nnod
- read(100,*) nelem
- read(100,*) option1
- read(100,*) deltat
- read(100,*) tf
- read(100,*) num
- read(100,*) Dx
- read(100,*) Dy
- read(100,*) velx
- read(100,*) vely
- read(100,*) sumlim
- 
- deltaV = length/nelemV
- deltaH = width/nelemH
-! nelem = nelemV*nelemH
- writetime = tf/dble(num)
- 
- close(100)
- 
-end subroutine read_in1
+subroutine read_gmsh
+    integer::i,j,dum,nElemOrig,elemType,numTag
+    character(len=32)::filename
+    
+! Read filename from input arguement
+    if(iargc().lt.1) then
+        write(*,*) "No .msh file detected. Input file name to adFE2D"
+        stop
+    end if
+    
+    do i = 1,iargc()
+        call getarg(i, filename)
+        write(*,*) "The gmsh file `", trim(filename), "` is being used"
+    end do
+! End input arguement reading
 
-subroutine read_in2
- integer::i,j,dum,num
+! Read header files in .msh file
+    open(101,file=filename,status='old')
+    do i=1,4
+        read(101,*)
+    end do
+! Done reading header lines
+    
+! Read node coordinates
+    read(101,*) nnod
+    allocate(xy_coord(nnod,2))
+    
+    do i=1,nnod
+        read(101,*) dum,(xy_coord(i,j),j=1,2) ! Read each line in .msh file
+    end do
+! Done Reading node coordinates
 
- open(101,file='elem.in',status='old')
- open(102,file='xycoord.in',status='old')
- open(103,file='bc.in',status='old')
- 
- read(101,*)
- read(102,*)
- read(103,*)
- 
- read(103,*) num
- read(103,*)
- do i = 1,num
-  read(103,*) dum,BC_type(dum),BC_value(dum)
- end do
- 
-! write(*,*) "Blue Footed Booby"
-! stop
- 
-! do i = 1,nelem
-!  read(101,*) dum,(elem_mat(i,j),j = 1,4)
-! end do
- 
-! do i = 1,nnod
-!  read(102,*) dum,(xy_coord(i,j),j=1,2)
-! end do
- 
- close(101)
- close(102)
- close(103)
- 
-end subroutine read_in2
+! Read 2 blank lines
+    do i=1,2
+        read(101,*)
+    end do
+    
+! Read element connectivitiy information
+! Number of elements in .msh files also contain more information than needed
+! We only need number of quadrilateral elements, thus node and line elements
+! are not needed. For more details, see:
+!   'http://gmsh.info/doc/texinfo/gmsh.html#MSH-ASCII-file-format'
+!
+! The idea is to count number of elements using nElemOrig, read lines until
+! element type (column 2) equals 3. The 'i' variable is used to keep track
+! of how many non-quadrilateral elements there are, and then subtracts that
+! number from nElemOrig to get nelem. Then the rest of the data is read
+! normally. This method needs to be changed for future .msh files that contain
+! mesh types other than quads.
 
-subroutine inputgen
- integer::i,j,num
+    read(101,*) nElemOrig
+    do while (elemType.ne.3)
+        read(101,*) dum, elemType
+    end do
+    backspace(101)
+    
+    nelem = nElemOrig-(dum-1)
+    allocate(elem_mat(nelem,4))
+    
+    do i = 1,nelem
+        read(101,*) dum, elemType, numTag, (dum,j=1,numTag), (elem_mat(i,j),j = 1,4)
+!        write(*,*) (elem_mat(i,j),j = 1,4)
+    end do
+    
+    close(101)
+    
+end subroutine read_gmsh
+
+subroutine read_bc
+    integer::i,j,dum,num
+    open(103,file='bc.in',status='old')
+    read(103,*) ! Read the header line
  
- open(101,file='elem.in',status='replace')
- open(102,file='xycoord.in',status='replace')
- 
- write(101,100)
- write(102,102)
- 
- num = 1
- i = 1
- do
-  do j = i,nelemV+i-1
-   write(101,101) num,j,j+nelemV+1,j+nelemV+1+1,j+1
-   num = num+1
-   nnod = j+nelemV+1+1
-   if(num.gt.nelem)exit
-  end do
-   if(num.gt.nelem)exit
-   i = i+nelemV+1
- end do
- 
- num = 0
- do i = 1,nelemH+1
-  do j = 1,nelemV+1
-   num = num+1
-   write(102,103) num,(i-1)*deltaH,(j-1)*deltaV
-  end do
- end do
- 
- nnod = num
- 
- close(101)
- close(102)
- write(*,104)
- stop
- 
- 100 format ("Elem #",t9,"Node 1",t17,"Node 2",t25,"Node 3",t33,"Node 4")
- 101 format (i5,t9,i5,t17,i5,t25,i5,t33,i5)
- 102 format ("Node #",t10,"X-coord",t21,"Y-coord")
- 103 format (i5,t9,2(es17.10,1x),i5,t41,2(es17.10,1x))
- 104 format (/15x,"Input file completed"/ &
-            &7x,"Please alter it, assign option1 to 0"/ &
-            &16x,"Then Rerun program"/)
- 
-end subroutine inputgen
+    read(103,*) num
+    read(103,*) ! Read the header line
+    do i = 1,num
+     read(103,*) dum,BC_type(dum),BC_value(dum)
+    end do
+    
+    close(103)
+    
+end subroutine read_bc
 
 end module input

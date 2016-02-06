@@ -6,16 +6,16 @@ Still need to figure out a way to output boundary faces
 */
 
 // Inputs
-lenX = 20; //m
-lenY = 10; //m
+lenX = 2; //m
+lenY = 2; //m
 
-gridsize = 1; // lenX / 20;
+gridsize = 0.01; // lenX / 20;
 
 // All numbering counterclockwise from bottom-left corner
-Point(1) = {-lenX/2, -lenY/2, 0, gridsize};
-Point(2) = {lenX/2, -lenY/2, 0, gridsize};
-Point(3) = {lenX/2, lenY/2, 0, gridsize};
-Point(4) = {-lenX/2, lenY/2, 0, gridsize};
+Point(1) = {0, 0, 0, gridsize};
+Point(2) = {lenX, 0, 0, gridsize};
+Point(3) = {lenX, lenY, 0, gridsize};
+Point(4) = {0, lenY, 0, gridsize};
 Line(1) = {1, 2};               // bottom line
 Line(2) = {2, 3};               // right line
 Line(3) = {3, 4};               // top line
@@ -26,7 +26,7 @@ Line(4) = {4, 1};               // left line
 //Physical Line(9) = {2};
 //Physical Line(10) = {3};
 
-Line Loop(5) = {1, 2, 3, 4};    
+Line Loop(5) = {1, 2, 3, 4};
 // the order of lines in Line Loop is used again in surfaceVector[]
 Plane Surface(6) = {5};
 
