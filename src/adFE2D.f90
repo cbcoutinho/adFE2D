@@ -38,7 +38,7 @@ use linsolver
     
     
 !        write(*,*) "Calling inverse"
-!        call inverse(stiff_reduced+stress_reduced,inv,nrows)
+!        call inverse(stiff_reduced+stress_reduced/deltat,inv,nrows)
 !        write(*,*) "Finish inverse"
 
 
@@ -98,8 +98,8 @@ use linsolver
     
 !        write(*,*) "Blue Footed Booby"
         
-        A = stiff_reduced+stress_reduced
-        b = -(RHS_reduced-matmul(stress_reduced,x(:,1)))
+        A = stiff_reduced+stress_reduced/deltat
+        b = -(RHS_reduced-matmul(stress_reduced/deltat,x(:,1)))
         
         if(matcalc) then
             write(*,*) "Calling Initial Matrix Factorization Routine"
@@ -121,7 +121,7 @@ use linsolver
         end if
         
 !        write(*,*) "Calling matmul"
-!        x(:,2) = matmul(inv,-(RHS_reduced-matmul(stress_reduced,x(:,1))))
+!        x(:,2) = matmul(inv,-(RHS_reduced-matmul(stress_reduced/deltat,x(:,1))))
         
         
 !        write(*,*) numt,numt_out,time

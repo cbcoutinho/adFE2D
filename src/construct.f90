@@ -30,7 +30,9 @@ subroutine build
         end do
     end do
     
-    stress_full = stress_full/deltat
+!!!!!! The time step was moved to the main solve loop
+!    stress_full = stress_full/deltat
+!!!!!! The time step was moved to the main solve loop
     
     do i = 1,nnod
         if(BC_type(i).eq.0) then
@@ -56,7 +58,7 @@ subroutine build
     
     dum1 = 1
     dum2 = nnod
-    do j = 1,nnod    
+    do j = 1,nnod
         if(BC_type(j).eq.0) then
             stiff_full(dum1:nnod-1,:) = stiff_full(dum1+1:nnod,:)
             stiff_full(:,dum1:nnod-1) = stiff_full(:,dum1+1:nnod)
