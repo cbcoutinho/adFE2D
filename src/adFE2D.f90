@@ -9,7 +9,6 @@ use linsolver
     double precision,dimension(:),allocatable::xplay,RHS_save,b,ipiv
     double precision,dimension(:,:),allocatable::x,inv,xsrc,A
     
-    
     call input_all
     call build
     
@@ -17,7 +16,6 @@ use linsolver
     open(909,file='scratch.out',status='replace')
     
     write(908,*) nnod
-    
     
     allocate(x(nrows,2))
     allocate(inv(nrows,nrows))

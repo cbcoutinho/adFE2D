@@ -11,7 +11,9 @@ subroutine input_all
     allocate(BC_type(nnod),BC_value(nnod),convert(nnod))
     allocate(stiff_full(nnod,nnod),stress_full(nnod,nnod))
     allocate(RHS_full(nnod))
- 
+    
+    write(*,*) "Blue footed booby"
+    
     BC_type = 1     ! Initializes all node boundaries as natural boundaries
     BC_value = 0D0  ! Sets gradient to zero  (zero neumann)
     
