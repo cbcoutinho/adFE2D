@@ -95,24 +95,28 @@ use linsolver
             end do
         end if
         
-
-        
-!        write(*,*) "Calling LinAlg"
-        
         A = stiff_reduced+stress_reduced
         b = -(RHS_reduced-matmul(stress_reduced,x(:,1)))
         
-        call lud(A, b, x(:,2), nrows)
-!        call dgesv (nrows, 1, A, nrows, ipiv, b, nrows, info)
-!        x(:,2) = b
+        if(matcalc) then
+            write(*,*) "Calling initial matrix decomp routine LinAlg"
         
-!        if ( info /= 0 ) then
-!            write ( *, '(a)' ) ' '
-!            write ( *, '(a,i8)' ) ' There was a problem, info = ', info
-!            stop
-!        end if
+            call lud(A, b, x(:,2), nrows)
+!            call dgesv (nrows, 1, A, nrows, ipiv, b, nrows, info)
+!            x(:,2) = b
+!        
+!            if ( info /= 0 ) then
+!                write ( *, '(a)' ) ' '
+!                write ( *, '(a,i8)' ) ' There was a problem, info = ', info
+!                stop
+!            end if
         
-!        write(*,*) "Finish LinAlg"
+            write(*,*) "Finish Initial LinAlg routine"
+            
+        else
+            call lud(A, b, x(:,2), nrows)
+        end if
+            
         
 !        write(*,*) "Calling matmul"
 !        x(:,2) = matmul(inv,-(RHS_reduced-matmul(stress_reduced,x(:,1))))
