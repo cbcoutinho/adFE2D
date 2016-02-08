@@ -17,3 +17,6 @@ Optional python3 modules for visualization:
 
 Plus a sample image:
 [SAMPLE IMAGE]
+
+## Plot residuals from scratch.dat using gnuplot:
+`gnuplot -persist -e "plot 'scratch.dat'" loop.plt`
