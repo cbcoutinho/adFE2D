@@ -143,9 +143,9 @@ use linsolver
                 write(908,100) xy_coord(i,:), value
             end do
             
-            sumsq = sqrt(sumsq/nrows)
+!            sumsq = sqrt(sumsq/nrows)
             write(*,*) numt,numt_out,time,sumsq
-!            write(909,*) time,sumsq
+            write(909,*) numt,sumsq
         end if
         
         if(sumsq.le.sumlim.or.time.ge.tf) exit
