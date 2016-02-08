@@ -135,7 +135,7 @@ subroutine read_bc
     allocate(RHS_reduced(nrows))
  
     write(str,100) nnod+1
-    write(*,*) trim(str)
+!    write(*,*) trim(str)
  
     100 format('(',i5,'(es17.10,1x))')
     

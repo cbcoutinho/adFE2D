@@ -3,7 +3,7 @@ use input
 use globals
 use construct
 use linsolver
-    integer::i,j,t,num2,dum, info
+    integer::i,j,t,dum, info
     double precision::delt_out,dum1,dum2, value
     double precision,dimension(:),allocatable::RHS_save,b,ipiv
     double precision,dimension(:,:),allocatable::inv,A
@@ -82,9 +82,9 @@ use linsolver
         delt_out = delt_out + deltat
         x(:,1) = x(:,2)
         
-        if(num2.gt.0) then
+        if(num_src.gt.0) then
             do i = 1,nrows
-                do j = 1,num2
+                do j = 1,num_src
                     if(time.gt.xsrc(i,1)) then
                         if(time.lt.(xsrc(i,1)+xsrc(i,2)).or.occur(i).eq.1) then
                             occur(i) = 0
@@ -95,30 +95,29 @@ use linsolver
             end do
         end if
     
-        write(*,*) "Blue Footed Booby"
+!        write(*,*) "Blue Footed Booby"
         
         A = stiff_reduced+stress_reduced
         b = -(RHS_reduced-matmul(stress_reduced,x(:,1)))
         
         if(matcalc) then
-            write(*,*) "Calling initial matrix decomp routine LinAlg"
-        
+            write(*,*) "Calling Initial Matrix Factorization Routine"
+            
             call lud(A, b, x(:,2), nrows)
 !            call dgesv (nrows, 1, A, nrows, ipiv, b, nrows, info)
 !            x(:,2) = b
-!        
+!            
 !            if ( info /= 0 ) then
 !                write ( *, '(a)' ) ' '
 !                write ( *, '(a,i8)' ) ' There was a problem, info = ', info
 !                stop
 !            end if
-        
-            write(*,*) "Finish Initial LinAlg routine"
+            
+            write(*,*) "Finish Initial Matrix Factorization Routine"
             
         else
             call lud(A, b, x(:,2), nrows)
         end if
-            
         
 !        write(*,*) "Calling matmul"
 !        x(:,2) = matmul(inv,-(RHS_reduced-matmul(stress_reduced,x(:,1))))
@@ -136,7 +135,8 @@ use linsolver
                     value = BC_value(i)
                 else
                     value = x(convert(i),2)
-                    sumsq = sumsq + (x(convert(i),2)-x(convert(i),1))**2D0
+!                    sumsq = sumsq + (x(convert(i),2)-x(convert(i),1))**2D0
+                    sumsq = max(sumsq,(x(convert(i),2)-x(convert(i),1))**2D0)
                 end if
 !                write(*,*) i, sumsq, convert(i), value
 !                delt_out = 0d0
@@ -158,7 +158,6 @@ use linsolver
     
     100 format (3(es13.6,1x))
     
-        
     deallocate(BC_type,BC_value)
     deallocate(stiff_full,stiff_reduced)
     deallocate(RHS_full,RHS_reduced,x,inv)
