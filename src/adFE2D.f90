@@ -6,7 +6,7 @@ use linsolver
     integer::i,j,t,num2,dum, info
     double precision::delt_out,dum1,dum2, value
     double precision,dimension(:),allocatable::RHS_save,b,ipiv
-    double precision,dimension(:,:),allocatable::x,inv,A
+    double precision,dimension(:,:),allocatable::inv,A
     
     call input_all
     call build

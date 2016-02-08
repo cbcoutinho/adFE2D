@@ -10,7 +10,7 @@ module globals
  double precision,dimension(:),allocatable::BC_value,RHS_full,RHS_reduced
  double precision,dimension(:,:),allocatable::stiff_full,stiff_reduced
  double precision,dimension(:,:),allocatable::stress_full,stress_reduced
- double precision,dimension(:,:),allocatable::xy_coord,phi,xsrc
+ double precision,dimension(:,:),allocatable::xy_coord,phi,xsrc,x
  character(500)::str
  save
  
