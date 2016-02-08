@@ -11,6 +11,7 @@ use linsolver
     
     call input_all
     call build
+    write(*,*) "Finish building matricies"
     
     open(908,file='data.out',status='replace')
     open(909,file='scratch.out',status='replace')
