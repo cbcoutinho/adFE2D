@@ -14,6 +14,7 @@ use linsolver
     
     open(908,file='data.dat',status='replace')
     open(909,file='scratch.dat',status='replace')
+    write(909, *) 0.0, 1.0
     
     write(908,*) nnod
     
