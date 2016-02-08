@@ -12,8 +12,8 @@ use linsolver
     call build
     write(*,*) "Finish building matricies"
     
-    open(908,file='data.out',status='replace')
-    open(909,file='scratch.out',status='replace')
+    open(908,file='data.dat',status='replace')
+    open(909,file='scratch.dat',status='replace')
     
     write(908,*) nnod
     
@@ -124,29 +124,32 @@ use linsolver
         
         
 !        write(*,*) numt,numt_out,time
-        if(delt_out.ge.writetime) then
-            sumsq = 0D0
-            delt_out = 0d0
-            numt_out = numt_out + 1
-            
-            do i = 1,nnod
-!                write(*,*) i
-                if(BC_type(i).eq.0) then
-                    value = BC_value(i)
-                else
-                    value = x(convert(i),2)
-!                    sumsq = sumsq + (x(convert(i),2)-x(convert(i),1))**2D0
-                    sumsq = max(sumsq,(x(convert(i),2)-x(convert(i),1))**2D0)
-                end if
-!                write(*,*) i, sumsq, convert(i), value
-!                delt_out = 0d0
+        sumsq = 0D0
+        
+        numt_out = numt_out + 1
+        
+        do i = 1,nnod
+!            write(*,*) i
+            if(BC_type(i).eq.0) then
+                value = BC_value(i)
+            else
+                value = x(convert(i),2)
+!                sumsq = sumsq + (x(convert(i),2)-x(convert(i),1))**2D0
+                sumsq = max(sumsq,(x(convert(i),2)-x(convert(i),1))**2D0)
+            end if
+!            write(*,*) i, sumsq, convert(i), value
+!            delt_out = 0d0
+            if(delt_out.ge.writetime) then
                 write(908,100) xy_coord(i,:), value
-            end do
-            
-!            sumsq = sqrt(sumsq/nrows)
-            write(*,*) numt,numt_out,time,sumsq
-            write(909,*) numt,sumsq
-        end if
+            end if
+        end do
+        if(delt_out.ge.writetime) delt_out = 0d0
+         
+!        sumsq = sqrt(sumsq/nrows)
+!        write(*,*) numt,numt_out,time,sumsq
+!        write(909,*) numt,sumsq
+        write(*,*) numt,numt_out,time,sumsq
+        write(909,*) time,sumsq
         
         if(sumsq.le.sumlim.or.time.ge.tf) exit
         if(time.ge.tf) exit

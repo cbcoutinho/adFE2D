@@ -4,6 +4,6 @@ Param_Value Param_Name Description
 1d2     numWrite    Number of Time step write outs
 1d0     Dx          Diffusion Coefficient in x
 1d0     Dy          Diffusion Coefficient in y
-1d0     velx        Velocity in x
-5d-1     vely        Velocity in y
-1d-6    sumlim      Limit on sum of sq residual
+0d0     velx        Velocity in x
+0d0     vely        Velocity in y
+1d-8    sumlim      Limit on sum of sq residual
