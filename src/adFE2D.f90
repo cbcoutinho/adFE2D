@@ -94,6 +94,8 @@ use linsolver
                 end do
             end do
         end if
+    
+        write(*,*) "Blue Footed Booby"
         
         A = stiff_reduced+stress_reduced
         b = -(RHS_reduced-matmul(stress_reduced,x(:,1)))

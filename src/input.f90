@@ -142,15 +142,15 @@ subroutine read_bc
 end subroutine read_bc
 
 subroutine read_ic
-    integer::i, num1, num2, dum
+    integer::i, dum
     
     open(104,file='ic.in',status='old')
     
     read(104,*) ! Read blank/header file
-    read(104,*) num1 ! Number of Initial Conditions
+    read(104,*) num_ic ! Number of Initial Conditions
     read(104,*) ! Read blank/header file
     
-    if(num1.lt.1) then
+    if(num_ic.lt.1) then
         write(*,*) "Must have at least 1 Initial Condition"
         stop
     end if
@@ -164,18 +164,18 @@ subroutine read_ic
     end if
     
     x(:,:) = initial
-    if(num1.gt.1) then
-        do i = 2,num1
+    if(num_ic.gt.1) then
+        do i = 2,num_ic
             read(104,*) dum,x(dum,2)
         end do
     end if
     
     read(104,*) ! Read blank/header file
-    read(104,*) num2 ! Number of Sources/Sinks
+    read(104,*) num_src ! Number of Sources/Sinks
     read(104,*) ! Read blank/header file
-    if(num2.gt.0) then
+    if(num_src.gt.0) then
      occur = 0
-        do i = 1,num2
+        do i = 1,num_src
             read(104,*) dum,xplay(dum),xsrc(dum,1),xsrc(dum,2)
             occur(dum) = 1
         end do

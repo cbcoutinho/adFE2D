@@ -1,6 +1,6 @@
 module globals
  integer::nelem,nnod,nrows
- integer::option1,numt
+ integer::option1,numt,num_ic,num_src
  integer,dimension(:),allocatable::BC_type,convert
  integer,dimension(:),allocatable::o_lud,occur
  integer,dimension(:,:),allocatable::elem_mat
