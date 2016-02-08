@@ -3,11 +3,10 @@ use input
 use globals
 use construct
 use linsolver
-    integer::i,j,t,num1,num2,dum, info
-    integer,dimension(:),allocatable::occur
+    integer::i,j,t,num2,dum, info
     double precision::delt_out,dum1,dum2, value
-    double precision,dimension(:),allocatable::xplay,RHS_save,b,ipiv
-    double precision,dimension(:,:),allocatable::x,inv,xsrc,A
+    double precision,dimension(:),allocatable::RHS_save,b,ipiv
+    double precision,dimension(:,:),allocatable::x,inv,A
     
     call input_all
     call build
@@ -25,44 +24,7 @@ use linsolver
     allocate(RHS_save(nrows))
     allocate(A(nrows,nrows),b(nrows),ipiv(nrows))
     
-    open(104,file='ic.in',status='old')
-    
-    read(104,*) ! Read blank/header file
-    read(104,*) num1 ! Number of Initial Conditions
-    read(104,*) ! Read blank/header file
-    
-    if(num1.lt.1) then
-        write(*,*) "Must have at least 1 Initial Condition"
-        stop
-    end if
-    
-    read(104,*) dum,initial ! First Value should always have dum==0
-    
-    if(dum.ne.0) then
-        write(*,*) "1st Initial Condition must initialize all nodes"
-        write(*,*) "Set first `Node #` to zero, to initialize all nodes"
-        stop
-    end if
-    
-    x(:,:) = initial
-    if(num1.gt.1) then
-        do i = 2,num1
-            read(104,*) dum,x(dum,2)
-        end do
-    end if
-    
-    read(104,*) ! Read blank/header file
-    read(104,*) num2 ! Number of Sources/Sinks
-    read(104,*) ! Read blank/header file
-    if(num2.gt.0) then
-     occur = 0
-        do i = 1,num2
-            read(104,*) dum,xplay(dum),xsrc(dum,1),xsrc(dum,2)
-            occur(dum) = 1
-        end do
-    end if
-    
-    close(104)
+    call read_ic
     
 !        do i = 1,nnod
 !            write(908,*) (xy_coord(i,j),j=1,2)

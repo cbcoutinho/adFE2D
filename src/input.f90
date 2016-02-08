@@ -4,38 +4,10 @@ contains
 
 subroutine input_all
     integer::i,num,dum
- 
+    
     call read_params
     call read_gmsh
-    
-    write(*,*) "Blue footed booby", nnod
-    
-    allocate(BC_type(nnod),BC_value(nnod),convert(nnod))
-    allocate(stiff_full(nnod,nnod),stress_full(nnod,nnod))
-    allocate(RHS_full(nnod))
-    
-    BC_type = 1     ! Initializes all node boundaries as natural boundaries
-    BC_value = 0D0  ! Sets gradient to zero  (zero neumann)
-    
     call read_bc
-    
-    convert = 0
-    nrows = 0
-    do i = 1,nnod
-        if(BC_type(i).ne.0) then
-            nrows = nrows + 1
-            convert(i) = nrows
-!            write(*,*) i,convert(i)
-        end if
-    end do
-    
-    allocate(stiff_reduced(nrows,nrows),stress_reduced(nrows,nrows))
-    allocate(RHS_reduced(nrows))
- 
-    write(str,100) nnod+1
-    write(*,*) trim(str)
- 
-    100 format('(',i5,'(es17.10,1x))')
  
 end subroutine input_all
 
@@ -130,6 +102,14 @@ end subroutine read_gmsh
 
 subroutine read_bc
     integer::i,j,dum,num
+    
+    allocate(BC_type(nnod),BC_value(nnod),convert(nnod))
+    allocate(stiff_full(nnod,nnod),stress_full(nnod,nnod))
+    allocate(RHS_full(nnod))
+    
+    BC_type = 1     ! Initializes all node boundaries as natural boundaries
+    BC_value = 0D0  ! Sets gradient to zero  (zero neumann)
+    
     open(103,file='bc.in',status='old')
     read(103,*) ! Read the header line
  
@@ -141,6 +121,68 @@ subroutine read_bc
     
     close(103)
     
+    convert = 0
+    nrows = 0
+    do i = 1,nnod
+        if(BC_type(i).ne.0) then
+            nrows = nrows + 1
+            convert(i) = nrows
+!            write(*,*) i,convert(i)
+        end if
+    end do
+    
+    allocate(stiff_reduced(nrows,nrows),stress_reduced(nrows,nrows))
+    allocate(RHS_reduced(nrows))
+ 
+    write(str,100) nnod+1
+    write(*,*) trim(str)
+ 
+    100 format('(',i5,'(es17.10,1x))')
+    
 end subroutine read_bc
+
+subroutine read_ic
+    integer::i, num1, num2, dum
+    
+    open(104,file='ic.in',status='old')
+    
+    read(104,*) ! Read blank/header file
+    read(104,*) num1 ! Number of Initial Conditions
+    read(104,*) ! Read blank/header file
+    
+    if(num1.lt.1) then
+        write(*,*) "Must have at least 1 Initial Condition"
+        stop
+    end if
+    
+    read(104,*) dum,initial ! First Value should always have dum==0
+    
+    if(dum.ne.0) then
+        write(*,*) "1st Initial Condition must initialize all nodes"
+        write(*,*) "Set first `Node #` to zero, to initialize all nodes"
+        stop
+    end if
+    
+    x(:,:) = initial
+    if(num1.gt.1) then
+        do i = 2,num1
+            read(104,*) dum,x(dum,2)
+        end do
+    end if
+    
+    read(104,*) ! Read blank/header file
+    read(104,*) num2 ! Number of Sources/Sinks
+    read(104,*) ! Read blank/header file
+    if(num2.gt.0) then
+     occur = 0
+        do i = 1,num2
+            read(104,*) dum,xplay(dum),xsrc(dum,1),xsrc(dum,2)
+            occur(dum) = 1
+        end do
+    end if
+    
+    close(104)
+    
+end subroutine read_ic
 
 end module input
