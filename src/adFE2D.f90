@@ -14,7 +14,7 @@ use linsolver
     
     open(908,file='data.dat',status='replace')
     open(909,file='scratch.dat',status='replace')
-    write(909, *) 0.0, 1.0
+!    write(909, *) 0.0, 1.0
     
     write(908,*) nnod
     
@@ -135,8 +135,8 @@ use linsolver
                 value = BC_value(i)
             else
                 value = x(convert(i),2)
-!                sumsq = sumsq + (x(convert(i),2)-x(convert(i),1))**2D0
-                sumsq = max(sumsq,(x(convert(i),2)-x(convert(i),1))**2D0)
+                sumsq = sumsq + (x(convert(i),2)-x(convert(i),1))**2D0
+!                sumsq = max(sumsq,(x(convert(i),2)-x(convert(i),1))**2D0)
             end if
 !            write(*,*) i, sumsq, convert(i), value
 !            delt_out = 0d0
@@ -146,15 +146,14 @@ use linsolver
         end do
         if(delt_out.ge.writetime) delt_out = 0d0
          
-!        sumsq = sqrt(sumsq/nrows)
-!        write(*,*) numt,numt_out,time,sumsq
-!        write(909,*) numt,sumsq
+        sumsq = sqrt(sumsq/nrows)
+
         write(*,*) numt,numt_out,time,sumsq
         write(909,*) time,sumsq
         
         if(sumsq.le.sumlim.or.time.ge.tf) exit
-        if(time.ge.tf) exit
-!    if(numt_out.ge.10) stop
+!        if(time.ge.tf) exit
+!        if(numt_out.ge.10) stop
      
     end do
     
