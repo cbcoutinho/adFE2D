@@ -27,10 +27,10 @@ subroutine build
 ! 5. The advective term in the Y direction
                 stiff_full(elem_mat(i,j),elem_mat(i,k)) = & 
                     & stiff_full(elem_mat(i,j),elem_mat(i,k))           - &
-                    & Dx*quad(j,k,1,1,xy_coord(elem_mat(i,1:numNodes(elemType(i))),1:2))    - &
-                    & Dy*quad(j,k,2,2,xy_coord(elem_mat(i,1:numNodes(elemType(i))),1:2))    - &
-                    & velx*quad(j,k,0,1,xy_coord(elem_mat(i,1:numNodes(elemType(i))),1:2))  - &
-                    & vely*quad(j,k,0,2,xy_coord(elem_mat(i,1:numNodes(elemType(i))),1:2))
+                    & Dx*quad(j,k,1,1,xy_coord(elem_mat(i,1:numNodes(elemType(i))),1:2),numNodes(elemType(i)))    - &
+                    & Dy*quad(j,k,2,2,xy_coord(elem_mat(i,1:numNodes(elemType(i))),1:2),numNodes(elemType(i)))    - &
+                    & velx*quad(j,k,0,1,xy_coord(elem_mat(i,1:numNodes(elemType(i))),1:2),numNodes(elemType(i)))  - &
+                    & vely*quad(j,k,0,2,xy_coord(elem_mat(i,1:numNodes(elemType(i))),1:2),numNodes(elemType(i)))
 
 ! Construct the full stress matrix, term by term
 ! The terms of the stress matrix are:
@@ -38,7 +38,7 @@ subroutine build
 ! 2. The time dependent term
                 stress_full(elem_mat(i,j),elem_mat(i,k)) = &
                     & stress_full(elem_mat(i,j),elem_mat(i,k))          - &
-                    & quad(j,k,0,0,xy_coord(elem_mat(i,1:numNodes(elemType(i))),1:2))
+                    & quad(j,k,0,0,xy_coord(elem_mat(i,1:numNodes(elemType(i))),1:2),numNodes(elemType(i)))
             end do
         end do
     end do

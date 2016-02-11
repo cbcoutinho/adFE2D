@@ -3,12 +3,12 @@ use linsolver
 integer,dimension(2)::node,dn
 contains
 
-function quad(node1,node2,dn1,dn2,xy)
- integer::ii,jj,kk,node1,node2,dn1,dn2
+function quad(nodeA,nodeB,dnA,dnB,xy,numNodes)
+ integer::ii,jj,kk,nodeA,nodeB,dnA,dnB,numNodes
  double precision,dimension(5)::x,w
  double precision,dimension(2,2)::J,invJ
- double precision,dimension(2,4)::P
- double precision,dimension(4,2)::xy
+ double precision,dimension(2,numNodes)::P
+ double precision,dimension(numNodes,2)::xy
 
  x(1) = 0.0D0
  x(2) = 1.0D0/3.0D0*sqrt(5.0D0-2.0D0*sqrt(1.0D1/7.0D0))
@@ -21,40 +21,40 @@ function quad(node1,node2,dn1,dn2,xy)
  w(4) = (3.22D2-1.3D1*sqrt(7.0D1))/9.0D2
  w(5) = (3.22D2-1.3D1*sqrt(7.0D1))/9.0D2
  
- node(1) = node1
- node(2) = node2
- dn(1) = dn1
- dn(2) = dn2
+ node(1) = nodeA
+ node(2) = nodeB
+ dn(1) = dnA
+ dn(2) = dnB
  
  quad = 0.0D0
  
  do ii = 1,5
   do jj = 1,5
-   quad = quad + f(x(ii),x(jj),xy)*w(ii)*w(jj)
+   quad = quad + f(x(ii),x(jj),xy,numNodes)*w(ii)*w(jj)
   end do
  end do
  
 end function quad
 
-function f(zeta,eta,xy)
- integer::ii,jj,kk,m
+function f(zeta,eta,xy,numNodes)
+ integer::ii,jj,kk,m,numNodes
  double precision::zeta,eta,f
  double precision,dimension(2,2)::J,invJ,tranJ,invtranJ
- double precision,dimension(2,4)::P
- double precision,dimension(4,2)::xy
+ double precision,dimension(2,numNodes)::P
+ double precision,dimension(numNodes,2)::xy
  double precision,dimension(2)::N
  
  N = 0D0
  
- do jj = 1,4
+ do jj = 1,numNodes
   P(1,jj) = quad_der_zeta(eta,jj)
   P(2,jj) = quad_der_eta(zeta,jj)
  end do
  
-! write(*,*) dn1,dn(1),dn2,dn(2)
+! write(*,*) dnA,dn(1),dnB,dn(2)
 ! write(*,*)
  
-! write(*,'(4(e13.6,1x))') P(1:2,1:4)
+! write(*,'(4(e13.6,1x))') P(1:2,1:numNodes)
 ! write(*,*)
  
  J = matmul(P,xy)
