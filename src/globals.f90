@@ -1,7 +1,7 @@
 module globals
  integer::nelem,nnod,nrows
  integer::option1,numt,num_ic,num_src
- integer,dimension(:),allocatable::BC_type,convert
+ integer,dimension(:),allocatable::BC_type,convert,elemType
  integer,dimension(:),allocatable::o_lud,occur
  integer,dimension(:,:),allocatable::elem_mat
  double precision::deltaV,deltaH,initial,deltat,time,sumlim

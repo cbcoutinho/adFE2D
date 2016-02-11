@@ -1,5 +1,6 @@
 module input
 use globals
+use auxiliary
 contains
 
 subroutine input_all
@@ -12,31 +13,38 @@ subroutine input_all
 end subroutine input_all
 
 subroutine read_params
-    double precision::length,width,numWrite
+    double precision::length,width
     
     open(100,file='params.in',status='old')
     read(100,*) ! Read blank line
     
     read(100,*) deltat
     read(100,*) tf
-    read(100,*) numWrite
+    read(100,*) writetime
     read(100,*) Dx
     read(100,*) Dy
     read(100,*) velx
     read(100,*) vely
     read(100,*) sumlim
     
-    writetime = tf/dble(numWrite)
-    
     close(100)
  
 end subroutine read_params
 
 subroutine read_gmsh
-    integer::i,j,dum,nElemOrig,elemType,numTag
+! This function reads a GMSH .msh file and returns:
+! 1. The number of nodes
+! 2. The number of elements
+! 3. The xy coordinates of the elemental nodes
+! 4. The element connectivitiy information (i.e. node ordering)
+
+    integer::i,j,dum,nElemOrig,elemTypeInt,numTag
     character(len=32)::filename
     
-! Read filename from input arguement
+!~~~~~~~~~~~~~ Read filename from input arguement
+!~~~
+!~~~
+!~~~
     if(iargc().lt.1) then
         write(*,*) "No .msh file detected. Input file name to adFE2D"
         stop
@@ -46,34 +54,49 @@ subroutine read_gmsh
         call getarg(i, filename)
         write(*,*) "The gmsh file `", trim(filename), "` is being used"
     end do
-! End input arguement reading
-
-! Read header files in .msh file
+!~~~
+!~~~
+!~~~
+!~~~~~~~~~~~~~ End input arguement reading
+    
+    
+    
+!~~~~~~~~~~~~~ Read header files in .msh file
+!~~~
+!~~~
+!~~~
     open(101,file=filename,status='old')
     do i=1,4
         read(101,*)
     end do
-! Done reading header lines
+!~~~
+!~~~
+!~~~
+!~~~~~~~~~~~~~ Done reading header lines
     
-! Read node coordinates
+    
+    
+!~~~~~~~~~~~~~ Read node xy coordinates
+!~~~
+!~~~
+!~~~
     read(101,*) nnod
     allocate(xy_coord(nnod,2))
     
     do i=1,nnod
         read(101,*) dum,(xy_coord(i,j),j=1,2) ! Read each line in .msh file
     end do
-! Done Reading node coordinates
+!~~~
+!~~~
+!~~~
+!~~~~~~~~~~~~~ Done Reading node xy coordinates
 
-! Read 2 blank lines
-    do i=1,2
-        read(101,*)
-    end do
     
-! Read element connectivitiy information
+!~~~~~~~~~~~~~ Read element connectivitiy information
 ! Number of elements in .msh files also contain more information than needed
 ! We only need number of quadrilateral elements, thus node and line elements
 ! are not needed. For more details, see:
-!   'http://gmsh.info/doc/texinfo/gmsh.html#MSH-ASCII-file-format'
+!   `http://gmsh.info/doc/texinfo/gmsh.html#MSH-ASCII-file-format`
 !
 ! The idea is to count number of elements using nElemOrig, read lines until
 ! element type (column 2) equals 3. The 'i' variable is used to keep track
@@ -82,18 +105,28 @@ subroutine read_gmsh
 ! normally. This method needs to be changed for future .msh files that contain
 ! mesh types other than quads.
 
+! Read 2 blank lines
+    do i=1,2
+        read(101,*)
+    end do
+    
     read(101,*) nElemOrig
-    do while (elemType.ne.3)
-        read(101,*) dum, elemType
+    do while (elemTypeInt.ne.3)
+        read(101,*) dum, elemTypeInt
     end do
     backspace(101)
     
     nelem = nElemOrig-(dum-1)
-    allocate(elem_mat(nelem,4))
+    allocate(elem_mat(nelem,4), elemType(nelem))
     
     do i = 1,nelem
-        read(101,*) dum, elemType, numTag, (dum,j=1,numTag), (elem_mat(i,j),j = 1,4)
-!        write(*,*) (elem_mat(i,j),j = 1,4)
+        read(101,*) dum, &                                  ! Original element number
+            & elemType(i), &                                ! Element type
+            & numTag, &                                     ! Number of tags
+            & (dum,j=1,numTag), &                           ! Read tags into dummy variable
+            & (elem_mat(i,j),j = 1,numNodes(elemType(i)))   ! Element connectivitiy information
+!        write(*,*) (elem_mat(i,j),j = 1,numNodes(elemType(i)))
+!        write(*,*) i, elemType(i), numNodes(elemType(i))
     end do
     
     close(101)

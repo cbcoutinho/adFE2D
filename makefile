@@ -13,18 +13,20 @@ FF = gfortran
 FLIBS = -lblas -llapack
 
 # Extra object files required by main program
-objects=$(OBJ)/input.o $(OBJ)/globals.o $(OBJ)/construct.o $(OBJ)/legendre.o $(OBJ)/linsolver.o
+objects=$(OBJ)/input.o $(OBJ)/globals.o $(OBJ)/auxiliary.o $(OBJ)/construct.o $(OBJ)/legendre.o $(OBJ)/linsolver.o
 
 
 $(BIN)/adFE2D: $(OBJ)/adFE2D.o $(objects)
 	$(FF) $(FFlags) -o $@ $+ $(FLIBS)
 $(OBJ)/adFE2D.o: $(SRC)/adFE2D.f90 $(objects)
 	$(FF) $(FFlags) -I$(OBJ) -c -o $@ $<
-$(OBJ)/input.o: $(SRC)/input.f90 $(OBJ)/globals.o
+$(OBJ)/input.o: $(SRC)/input.f90 $(OBJ)/globals.o $(OBJ)/auxiliary.o
+	$(FF) $(FFlags) -J$(OBJ) -c -o $@ $<
+$(OBJ)/auxiliary.o: $(SRC)/auxiliary.f90
 	$(FF) $(FFlags) -J$(OBJ) -c -o $@ $<
 $(OBJ)/globals.o: $(SRC)/globals.f90
 	$(FF) $(FFlags) -J$(OBJ) -c -o $@ $<
-$(OBJ)/construct.o: $(SRC)/construct.f90 $(OBJ)/globals.o $(OBJ)/legendre.o
+$(OBJ)/construct.o: $(SRC)/construct.f90 $(OBJ)/globals.o $(OBJ)/legendre.o $(OBJ)/auxiliary.o
 	$(FF) $(FFlags) -J$(OBJ) -c -o $@ $<
 $(OBJ)/legendre.o: $(SRC)/legendre.f90 $(OBJ)/linsolver.o
 	$(FF) $(FFlags) -J$(OBJ) -c -o $@ $<
