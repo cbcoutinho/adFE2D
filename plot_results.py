@@ -5,7 +5,7 @@ import scipy.interpolate
 from matplotlib import animation
 
 def block1():
-    filename='data.dat'
+    filename='./test/data.dat'
     with open(filename,'r') as myfile:
         nnod = int(myfile.readline())
         
