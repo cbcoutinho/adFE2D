@@ -86,6 +86,8 @@ subroutine read_gmsh
     do i=1,nnod
         read(101,*) dum,(xy_coord(i,j),j=1,2) ! Read each line in .msh file
     end do
+    
+    write(*,*) min(xy_coord(:,1)), min(xy_coord(:,2)), max(xy_coord(:,1)), max(xy_coord(:,2))
 !~~~
 !~~~
 !~~~
