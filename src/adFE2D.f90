@@ -3,10 +3,10 @@ use input
 use globals
 use construct
 use linsolver
-    integer::i,j,t,dum, info
-    double precision::delt_out,dum1,dum2, value
-    double precision,dimension(:),allocatable::RHS_save,b,ipiv
-    double precision,dimension(:,:),allocatable::inv,A
+    integer::i, j !, info
+    double precision::delt_out, value, sumsq
+    double precision,dimension(:),allocatable::RHS_save, b, ipiv
+    double precision,dimension(:,:),allocatable::inv, A
     
     call input_all
     call build
@@ -21,7 +21,7 @@ use linsolver
     allocate(x(nrows,2))
     allocate(inv(nrows,nrows))
     allocate(xsrc(nrows,2),xplay(nrows),occur(nrows))
-    allocate(decomp(nrows,nrows),o_lud(n),q_lud(n))
+    allocate(decomp(nrows,nrows),o_lud(nrows),q_lud(nrows))
     allocate(RHS_save(nrows))
     allocate(A(nrows,nrows),b(nrows),ipiv(nrows))
     
@@ -74,7 +74,6 @@ use linsolver
     delt_out = 0d0
     RHS_save = RHS_reduced
     matcalc = .true.
-    sumsq = 1d0
     
     do
         RHS_reduced = RHS_save

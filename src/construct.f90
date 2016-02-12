@@ -5,8 +5,7 @@ use auxiliary
 contains
 
 subroutine build
-    integer::i,j,k,elem,dum1,dum2
-    double precision::test
+    integer::i,j,k,dum1,dum2
     
     stiff_full = 0D0
     stress_full = 0D0
@@ -93,8 +92,8 @@ subroutine build
 !    end do
 !    write(103,*)
     
-    100 format(2(e13.6,1x))
-    101 format(4(i3,1x))
+!    100 format(2(e13.6,1x))
+!    101 format(4(i3,1x))
     
 end subroutine build
 

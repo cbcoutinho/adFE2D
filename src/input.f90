@@ -4,16 +4,24 @@ use auxiliary
 contains
 
 subroutine input_all
-    integer::i,num,dum
+!    integer::i,num,dum
     
     call read_params
     call read_gmsh
+    
+    allocate(BC_type(nnod),BC_value(nnod),convert(nnod))
+    allocate(stiff_full(nnod,nnod),stress_full(nnod,nnod))
+    allocate(RHS_full(nnod))
+    
     call read_bc
+    
+    allocate(stiff_reduced(nrows,nrows),stress_reduced(nrows,nrows))
+    allocate(RHS_reduced(nrows))
  
 end subroutine input_all
 
 subroutine read_params
-    double precision::length,width
+!    double precision::length,width
     
     open(100,file='params.in',status='old')
     read(100,*) ! Read blank line
@@ -40,6 +48,7 @@ subroutine read_gmsh
 
     integer::i,j,dum,nElemOrig,elemTypeInt,numTag
     character(len=32)::filename
+    
     
 !~~~~~~~~~~~~~ Read filename from input arguement
 !~~~
@@ -84,10 +93,8 @@ subroutine read_gmsh
     allocate(xy_coord(nnod,2))
     
     do i=1,nnod
-        read(101,*) dum,(xy_coord(i,j),j=1,2) ! Read each line in .msh file
+        read(101,*) dum,(xy_coord(i,j),j=1,2)   ! Read each line in .msh file
     end do
-    
-    write(*,*) min(xy_coord(:,1)), min(xy_coord(:,2)), max(xy_coord(:,1)), max(xy_coord(:,2))
 !~~~
 !~~~
 !~~~
@@ -136,25 +143,107 @@ subroutine read_gmsh
 end subroutine read_gmsh
 
 subroutine read_bc
-    integer::i,j,dum,num
+    integer::i, j, dum, num, coord, dum_bc_type, indx
+    integer,dimension(:),allocatable::indx_subset
+    double precision::dum_coord_value, dum_bc_value
+    double precision, parameter::eps=1d-8
+    logical,dimension(:),allocatable::query
     
-    allocate(BC_type(nnod),BC_value(nnod),convert(nnod))
-    allocate(stiff_full(nnod,nnod),stress_full(nnod,nnod))
-    allocate(RHS_full(nnod))
-    
-    BC_type = 1     ! Initializes all node boundaries as natural boundaries
-    BC_value = 0D0  ! Sets gradient to zero  (zero neumann)
+    BC_type = 1             ! Initializes all node boundaries as natural boundaries
+    BC_value = 0D0          ! Sets gradient to zero  (zero neumann)
     
     open(103,file='bc.in',status='old')
-    read(103,*) ! Read the header line
- 
-    read(103,*) num
-    read(103,*) ! Read the header line
-    do i = 1,num
-     read(103,*) dum,BC_type(dum),BC_value(dum)
-    end do
     
+    read(103,*)             ! Read the header line
+    read(103,*) num         ! Number of Unique boundaries
+    read(103,*)             ! Read the header line
+    
+    if (num .ge. 1) then    ! If there is at least one boundary condition, then read
+        do i = 1,num
+            read(103,*) dum,BC_type(dum),BC_value(dum)
+        end do
+    end if
+    
+    read(103,*)             ! Read the header line
+    read(103,*) num         ! Number of Coordinate-based boundaries
+    read(103,*)             ! Read the header line
+    
+    if (num .ge. 1) then
+        write(*,*) "Number of Coordinate-based boundaries =", num
+        
+        allocate(query(nnod))
+        
+        do i = 1,num
+            query = .false.
+            
+            read(103,*) coord, dum_coord_value, dum_bc_type, dum_bc_value
+            
+            write(*,*) coord, dum_coord_value, dum_bc_type, dum_bc_value
+            write(*,*)
+            write(*,*)
+
+!~~~~~~~~~~~~~~ Some error checking
+!~~~
+!~~~
+!~~~
+            if ((coord.lt.1) .or. (coord.gt.2)) then
+                write(*,*) "Coordinate =", coord, " is not supported"
+                write(*,*) "Currently only accept X=1 and Y=2 coordinates"
+                stop
+            end if
+            
+            if ((dum_bc_type.lt.0) .or. (dum_bc_type.gt.1)) then
+                write(*,*) "Boundary Condition type =", coord, " is not supported"
+                write(*,*) "Currently only accept Dirchlet=0 and Neumann=1 BCs"
+                stop
+            end if
+            
+            if ((dum_coord_value .gt. maxval(xy_coord(:,coord))+eps) .or. &
+                & (dum_coord_value .lt. minval(xy_coord(:,coord))-eps)) then
+                write(*,*) "Boundary Value =", dum_coord_value, " exceeds minimum or"
+                write(*,*) "maximum value of coordinate. Pay attention to geometry bounds"
+                stop
+            end if
+!~~~
+!~~~
+!~~~
+!~~~~~~~~~~~~~ Finish error checking
+            
+            do j=1,nnod
+                query(j) = dum_coord_value > (xy_coord(j,coord) - eps) .and. &
+                    & dum_coord_value < (xy_coord(j,coord) + eps)
+            end do
+            
+            write(*,*) pack([(indx,indx=1,nnod)],query)
+            write(*,*) 
+            write(*,*) 
+            
+            allocate(indx_subset(count(query)))
+            
+            indx_subset = pack([(indx,indx=1,nnod)],query)
+            
+            do j=1,count(query)
+                BC_type(indx_subset(j)) = dum_bc_type
+                BC_value(indx_subset(j)) = dum_bc_value
+            end do
+            
+            deallocate(indx_subset)
+            
+        end do
+        
+        deallocate(query)
+    end if
+    
+    
+    
+!    value = minval(xy_coord(:,1))               ! Minimum X coordinate
+!    write(*,*) pack([(indx,indx=1,nnod)],query)
+!    write(*,*) minval(xy_coord,1), maxval(xy_coord,1)
+!    deallocate(query)
+            
     close(103)
+
+    stop
     
     convert = 0
     nrows = 0
@@ -165,13 +254,10 @@ subroutine read_bc
 !            write(*,*) i,convert(i)
         end if
     end do
-    
-    allocate(stiff_reduced(nrows,nrows),stress_reduced(nrows,nrows))
-    allocate(RHS_reduced(nrows))
  
     write(str,100) nnod+1
 !    write(*,*) trim(str)
- 
+    
     100 format('(',i5,'(es17.10,1x))')
     
 end subroutine read_bc

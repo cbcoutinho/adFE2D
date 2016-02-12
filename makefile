@@ -9,7 +9,7 @@ BIN=$(current_dir)/bin
 
 # Compiler
 FF = gfortran
-#FFlags = -Wall -fbounds-check
+FFlags = -Wall -fbounds-check
 FLIBS = -lblas -llapack
 
 # Extra object files required by main program
