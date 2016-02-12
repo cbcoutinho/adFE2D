@@ -169,7 +169,7 @@ subroutine read_bc
     read(103,*)             ! Read the header line
     
     if (num .ge. 1) then
-        write(*,*) "Number of Coordinate-based boundaries =", num
+!        write(*,*) "Number of Coordinate-based boundaries =", num
         
         allocate(query(nnod))
         
@@ -178,9 +178,9 @@ subroutine read_bc
             
             read(103,*) coord, dum_coord_value, dum_bc_type, dum_bc_value
             
-            write(*,*) coord, dum_coord_value, dum_bc_type, dum_bc_value
-            write(*,*)
-            write(*,*)
+!            write(*,*) coord, dum_coord_value, dum_bc_type, dum_bc_value
+!            write(*,*)
+!            write(*,*)
 
 !~~~~~~~~~~~~~~ Some error checking
 !~~~
@@ -214,9 +214,9 @@ subroutine read_bc
                     & dum_coord_value < (xy_coord(j,coord) + eps)
             end do
             
-            write(*,*) pack([(indx,indx=1,nnod)],query)
-            write(*,*) 
-            write(*,*) 
+!            write(*,*) pack([(indx,indx=1,nnod)],query)
+!            write(*,*) 
+!            write(*,*) 
             
             allocate(indx_subset(count(query)))
             
@@ -234,16 +234,13 @@ subroutine read_bc
         deallocate(query)
     end if
     
-    
-    
-!    value = minval(xy_coord(:,1))               ! Minimum X coordinate
-!    write(*,*) pack([(indx,indx=1,nnod)],query)
-!    write(*,*) minval(xy_coord,1), maxval(xy_coord,1)
-!    deallocate(query)
-            
+!    do i=1,nnod
+!        write(*,*) i, xy_coord(i,:), BC_type(i), BC_value(i)
+!    end do
+                
     close(103)
 
-    stop
+!    stop
     
     convert = 0
     nrows = 0
@@ -258,7 +255,7 @@ subroutine read_bc
     write(str,100) nnod+1
 !    write(*,*) trim(str)
     
-    100 format('(',i5,'(es17.10,1x))')
+    100 format('(',i7,'(es17.10,1x))')
     
 end subroutine read_bc
 

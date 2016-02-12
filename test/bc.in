@@ -1,9 +1,9 @@
 Boundary Conditions
-0       Number of Unique Boundaries
+1       Number of Unique Boundaries
 Node #  BC Type BC Value
+3       0       0d0
 Additional Coordinate-based Boundary Conditions
-3       Number of Coordinate-based Boundary Conditions
+2       Number of Coordinate-based Boundary Conditions
 Coord.  Coord Value BC Type BC Value
-2       0d0         0       1d0
-2       1d0         0       2d0
-2       2d0         0       0d0
+1       0d0         0       2d0
+2       0d0         0       2d0

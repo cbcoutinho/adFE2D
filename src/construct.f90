@@ -17,6 +17,7 @@ subroutine build
     do i = 1,nelem
         do j = 1,numNodes(elemType(i))
             do k = 1,numNodes(elemType(i))
+                
 ! Construct the full stiffness matrix, term by term
 ! The terms of the Stiffness matrix are:
 ! 1. The stiffness matrix value itself
@@ -24,9 +25,9 @@ subroutine build
 ! 3. The diffusive term in the Y direction
 ! 4. The advective term in the X direction
 ! 5. The advective term in the Y direction
-                stiff_full(elem_mat(i,j),elem_mat(i,k)) = & 
+                stiff_full(elem_mat(i,j),elem_mat(i,k)) = &
                     & stiff_full(elem_mat(i,j),elem_mat(i,k))           - &
-                    & Dx*quad(j,k,1,1,xy_coord(elem_mat(i,1:numNodes(elemType(i))),1:2),numNodes(elemType(i)))    - &
+                    & Dx*quad(j,k,1,1,xy_coord(elem_mat(i,1:numNodes(elemType(i))),1:2),numNodes(elemType(i)))       - &
                     & Dy*quad(j,k,2,2,xy_coord(elem_mat(i,1:numNodes(elemType(i))),1:2),numNodes(elemType(i)))    - &
                     & velx*quad(j,k,0,1,xy_coord(elem_mat(i,1:numNodes(elemType(i))),1:2),numNodes(elemType(i)))  - &
                     & vely*quad(j,k,0,2,xy_coord(elem_mat(i,1:numNodes(elemType(i))),1:2),numNodes(elemType(i)))
@@ -38,6 +39,7 @@ subroutine build
                 stress_full(elem_mat(i,j),elem_mat(i,k)) = &
                     & stress_full(elem_mat(i,j),elem_mat(i,k))          - &
                     & quad(j,k,0,0,xy_coord(elem_mat(i,1:numNodes(elemType(i))),1:2),numNodes(elemType(i)))
+                
             end do
         end do
     end do

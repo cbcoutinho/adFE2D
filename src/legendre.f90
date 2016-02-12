@@ -26,13 +26,13 @@ function quad(nodeA,nodeB,dnA,dnB,xy,numNodes)
     dn(2) = dnB
     
     quad = 0.0D0
- 
+    
     do ii = 1,5
         do jj = 1,5
             quad = quad + f(x(ii),x(jj),xy,numNodes)*w(ii)*w(jj)
         end do
     end do
- 
+    
 end function quad
 
 function f(zeta,eta,xy,numNodes)
@@ -84,7 +84,7 @@ function f(zeta,eta,xy,numNodes)
     end do
     
     f = N(1)*N(2)*det(J)
- 
+    
 end function f
 
 function det(a)
@@ -97,43 +97,43 @@ function det(a)
         write(*,'(a)') "Not Good!"
         stop
     end if
- 
+    
 end function det
 
 function quad_bas(zeta,eta,coord)
     integer::coord
     double precision::zeta,eta
     double precision::quad_bas
-
-    if(coord.eq.1) quad_bas = 2.5D-1*(1.0D0-zeta)*(1.0D0-eta)
-    if(coord.eq.2) quad_bas = 2.5D-1*(1.0D0+zeta)*(1.0D0-eta)
-    if(coord.eq.3) quad_bas = 2.5D-1*(1.0D0+zeta)*(1.0D0+eta)
-    if(coord.eq.4) quad_bas = 2.5D-1*(1.0D0-zeta)*(1.0D0+eta)
- 
+    
+    if(coord.eq.1) quad_bas      =   2.5D-1*(1.0D0-zeta)*(1.0D0-eta)
+    if(coord.eq.2) quad_bas      =   2.5D-1*(1.0D0+zeta)*(1.0D0-eta)
+    if(coord.eq.3) quad_bas      =   2.5D-1*(1.0D0+zeta)*(1.0D0+eta)
+    if(coord.eq.4) quad_bas      =   2.5D-1*(1.0D0-zeta)*(1.0D0+eta)
+    
 end function quad_bas
 
 function quad_der_zeta(eta,coord)
     integer::coord
     double precision::eta
     double precision::quad_der_zeta
-
-    if(coord.eq.1) quad_der_zeta = -2.5D-1*(1.0D0-eta)
-    if(coord.eq.2) quad_der_zeta = 2.5D-1*(1.0D0-eta)
-    if(coord.eq.3) quad_der_zeta = 2.5D-1*(1.0D0+eta)
-    if(coord.eq.4) quad_der_zeta = -2.5D-1*(1.0D0+eta)
-
+    
+    if(coord.eq.1) quad_der_zeta =  -2.5D-1*(1.0D0-eta)
+    if(coord.eq.2) quad_der_zeta =   2.5D-1*(1.0D0-eta)
+    if(coord.eq.3) quad_der_zeta =   2.5D-1*(1.0D0+eta)
+    if(coord.eq.4) quad_der_zeta =  -2.5D-1*(1.0D0+eta)
+    
 end function quad_der_zeta
 
 function quad_der_eta(zeta,coord)
     integer::coord
     double precision::zeta
     double precision::quad_der_eta
-
-    if(coord.eq.1) quad_der_eta = -2.5D-1*(1.0D0-zeta)
-    if(coord.eq.2) quad_der_eta = -2.5D-1*(1.0D0+zeta)
-    if(coord.eq.3) quad_der_eta = 2.5D-1*(1.0D0+zeta)
-    if(coord.eq.4) quad_der_eta = 2.5D-1*(1.0D0-zeta)
-
+    
+    if(coord.eq.1) quad_der_eta =   -2.5D-1*(1.0D0-zeta)
+    if(coord.eq.2) quad_der_eta =   -2.5D-1*(1.0D0+zeta)
+    if(coord.eq.3) quad_der_eta =    2.5D-1*(1.0D0+zeta)
+    if(coord.eq.4) quad_der_eta =    2.5D-1*(1.0D0-zeta)
+    
 end function quad_der_eta
 
 end module legendre
