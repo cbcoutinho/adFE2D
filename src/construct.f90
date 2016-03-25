@@ -39,7 +39,6 @@ subroutine build
                 stress_full(elem_mat(i,j),elem_mat(i,k)) = &
                     & stress_full(elem_mat(i,j),elem_mat(i,k))          - &
                     & quad(j,k,0,0,xy_coord(elem_mat(i,1:numNodes(elemType(i))),1:2),numNodes(elemType(i)))
-                
             end do
         end do
     end do
