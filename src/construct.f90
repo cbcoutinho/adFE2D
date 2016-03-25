@@ -29,8 +29,8 @@ subroutine build
                     & stiff_full(elem_mat(i,j),elem_mat(i,k))                                                       - &
                     & Dx*quad(j,k,1,1,xy_coord(elem_mat(i,1:numNodes(elemType(i))),1:2),numNodes(elemType(i)))      - &
                     & Dy*quad(j,k,2,2,xy_coord(elem_mat(i,1:numNodes(elemType(i))),1:2),numNodes(elemType(i)))      - &
-                    & velx*quad(j,k,0,1,xy_coord(elem_mat(i,1:numNodes(elemType(i))),1:2),numNodes(elemType(i)))    - &
-                    & vely*quad(j,k,0,2,xy_coord(elem_mat(i,1:numNodes(elemType(i))),1:2),numNodes(elemType(i)))
+                    & velx*quad(j,k,0,2,xy_coord(elem_mat(i,1:numNodes(elemType(i))),1:2),numNodes(elemType(i)))    - &
+                    & vely*quad(j,k,0,1,xy_coord(elem_mat(i,1:numNodes(elemType(i))),1:2),numNodes(elemType(i)))
 
 ! Construct the full stress matrix, term by term
 ! The terms of the stress matrix are:

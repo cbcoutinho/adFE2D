@@ -22,11 +22,12 @@ Plus a sample image:
 To run adFE2D, you first need to create a mesh file using GMSH, or
 manually write a .msh file that has the same format as a GMSH .msh
 file. Currently, only linear quadrilateral meshes are allowed, but
-linear trianle element meshes as well as hybrid meshes are being
+linear trianle element meshes as well as hybrid meshes will be
 implemented.
 
 Once the the program is compiled and a mesh file has been created,
-the program is executed using the following command:
+the program is executed from the test directory using the following
+command:
 
 `../bin/adFE2D example.msh`
 
