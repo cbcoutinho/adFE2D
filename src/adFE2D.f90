@@ -3,13 +3,14 @@ use input
 use globals
 use construct
 use linsolver
-    integer::i, j !, info
+    integer::i, j
     double precision::delt_out, value, sumsq
     double precision,dimension(:),allocatable::RHS_save, b, ipiv
     double precision,dimension(:,:),allocatable::inv, A
     
     call input_all
     call build
+    
     write(*,*) "Finish building matricies"
     
     open(908,file='data.dat',status='replace')

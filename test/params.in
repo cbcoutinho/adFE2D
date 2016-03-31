@@ -1,7 +1,7 @@
 Param_Value Param_Name Description
 1d-4    deltat      Time step length
 5d-1     tf          Final Time
-2d-3    writetime   Timestep frequency to write data out
+2d-2    writetime   Timestep frequency to write data out
 1d-1     Dx          Diffusion Coefficient in x
 1d-1     Dy          Diffusion Coefficient in y
 0d-3     velx        Velocity in x
