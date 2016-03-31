@@ -8,5 +8,5 @@ Node #  BC Type BC Value
 Additional Coordinate-based Boundary Conditions
 2       Number of Coordinate-based Boundary Conditions
 Coord.  Coord Value BC Type BC Value
-1       0d0         0       1d0
-2       1d0         0       0d0
+1       0d-1         0       1d0
+1       1d-1         0       0d0

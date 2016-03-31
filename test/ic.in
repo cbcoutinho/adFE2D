@@ -1,7 +1,7 @@
 Initial Conditions
 1   Number of Initial Conditions
 Node #  IC Value
-0       0d0
+0       5d-1
 Additional Point Sources or Sinks
 0   Number of Point Sources or Sinks
 Node #  Value   Time    Duration
