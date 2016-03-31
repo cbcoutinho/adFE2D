@@ -6,6 +6,7 @@ contains
 
 subroutine build
     integer::i,j,k,dum1,dum2
+    double precision::Q
     
     stiff_full = 0D0
     stress_full = 0D0

@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Make adFE2D
+make
+
+# Change to test directory
+cd test
+
+# Create mesh using gmsh
+gmsh -2 square.geo -o square.msh
+gmsh -2 square.geo -o square.vtk
+
+# Run adFE2D on test
+../bin/adFE2D square.msh
