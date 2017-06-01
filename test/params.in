@@ -1,9 +1,9 @@
 Param_Value Param_Name Description
 1d-4    deltat      Time step length
-5d-1     tf          Final Time
-2d-2    writetime   Timestep frequency to write data out
-1d-1     Dx          Diffusion Coefficient in x
-1d-1     Dy          Diffusion Coefficient in y
-0d-3     velx        Velocity in x
+5d+1     tf          Final Time
+2d-1    writetime   Timestep frequency to write data out
+1d-2     Dx          Diffusion Coefficient in x
+1d-2     Dy          Diffusion Coefficient in y
+5d-2     velx        Velocity in x
 0d-3     vely        Velocity in y
 1d-8    sumlim      Limit on sum of sq residual

@@ -6,8 +6,8 @@ Still need to figure out a way to output boundary faces
 */
 
 // Inputs
-lenX = 0.1; //m
-lenY = 0.1; //m
+lenX = 0.2; //m
+lenY = 0.2; //m
 
 gridsize = 0.005; // lenX / 20;
 

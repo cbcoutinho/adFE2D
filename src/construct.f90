@@ -70,7 +70,7 @@ end subroutine build_Stress_Full
 
 subroutine build_RHS_Full
     integer::i,j,k
-    double precision::Q=5.0
+    double precision::Q=-1d-1
     
     do i = 1,nelem
         do j = 1,numNodes(elemType(i))
